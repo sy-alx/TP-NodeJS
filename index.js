@@ -1,6 +1,8 @@
 var express = require('express');
 var app = express();
 const bodyParser = require('body-parser');
+const jwt = require('jsonwebtoken');
+const User = require('./models/Users'); 
 
 // '/' est la route racine
 
@@ -8,8 +10,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.get('/', function (req, res) {
   res.send(`
         <form action="/login" method="post">
-            <label for="username">Username</label>
-            <input type="text" id="username" name="username">
+            <label for="email">Email</label>
+            <input type="text" id="email" name="Email">
             <label for="password">Password</label>
             <input type="password" id="password" name="password">
             <button type="submit">Login</button>
@@ -17,13 +19,21 @@ app.get('/', function (req, res) {
     `);
 });
 
-app.post('/login', (req, res) => {
-  const username = req.body.username;
-  const password = req.body.password;
-  // Here you should implement your logic to check the username and password
-  // If they are valid, you can set the user session and redirect the user to their dashboard
-  // If they are not valid, you can redirect them back to the login page with an error message
-  res.send(`Username: ${username}, Password: ${password}`);
+app.post('/login', async (req, res) => {
+  const { email, password } = req.body;
+
+  const user = await User.findOne({ email });
+  if (!user) {
+    return res.status(400).send('Invalid email or password.');
+  }
+
+  const validPassword = await user.isValidPassword(password);
+  if (!validPassword) {
+    return res.status(400).send('Invalid email or password.');
+  }
+
+  const token = jwt.sign({ _id: user._id }, 'mounmounLeBest');
+  res.send(token);
 });
 
 
