@@ -1,25 +1,30 @@
-var express = require('express');
-var app = express();
+const express = require('express');
 const bodyParser = require('body-parser');
-const User = require('./models/Users'); 
-const loginRouter = require('./routes/login'); // Importez le routeur
+const loginRouter = require('./routes/login');
 
+const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
 app.get('/', function (req, res) {
   res.send(`
-        <form action="/login" method="post">
-            <label for="email">Email</label>
-            <input type="text" id="email" name="Email">
-            <label for="password">Password</label>
-            <input type="password" id="password" name="password">
-            <button type="submit">Login</button>
-        </form>
-    `);
+    <form action="/login" method="post">
+      <label for="email">Email</label>
+      <input type="text" id="email" name="Email">
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password">
+      <button type="submit">Login</button>
+    </form>
+  `);
 });
 
-app.use('/', loginRouter); // Utilisez le routeur
+// Use the login route handler for POST requests to '/login'
+app.use('/login', loginRouter);
 
-app.listen(4000, function () {
-  console.log("Application d'exemple écoutant sur le port 4000 !");
+// Add your 404 error handler here
+app.use(function (req, res, next) {
+  res.status(404).send("Sorry can't find that!")
 });
+
+const portAuth  = 4000;
+app.listen(portAuth, () => console.log(`Serveur d'authentification en écoute sur le port ${portAuth}...`));

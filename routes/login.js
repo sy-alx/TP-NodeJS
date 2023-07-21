@@ -1,9 +1,9 @@
+// routes/login.js
 const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-const mongoose = require('mongoose');
-const User = mongoose.model('User');
+const User = require('../models/Users');
 
 router.post('/login', async (req, res) => {
   const email = req.body.Email;
@@ -14,7 +14,7 @@ router.post('/login', async (req, res) => {
     return res.status(400).send('Invalid email or password.');
   }
 
-  const validPassword = await bcrypt.compare(password, user.password);
+  const validPassword = await user.isValidPassword(password);
   if (!validPassword) {
     return res.status(400).send('Invalid email or password.');
   }

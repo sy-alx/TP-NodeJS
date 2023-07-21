@@ -1,3 +1,4 @@
+// serveur.js
 const express = require('express');
 const mongoose = require('mongoose');
 const shootingRouter = require('./routes/shootings'); 
@@ -17,5 +18,5 @@ app.use((err, req, res, next) => { // Middleware pour la gestion des erreurs
   res.status(500).send('quelque chose ne va pas ');
 });
 
-const port = process.env.PORT || 3000;
-app.listen(port, () => console.log(`port du serveur : ${port}`));
+const portServeur = process.env.PORT || 3000;
+app.listen(portServeur, () => console.log(`Port du serveur principal : ${portServeur}`));

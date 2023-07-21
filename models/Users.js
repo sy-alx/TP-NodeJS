@@ -1,5 +1,4 @@
-// models/User.js
-
+// models/Users.js
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 
@@ -10,11 +9,10 @@ const userSchema = new mongoose.Schema({
   lastName: String
 });
 
-userSchema.methods.isValidPassword = async function(password) {
+userSchema.methods.isValidPassword = async function (password) {
   const compare = await bcrypt.compare(password, this.password);
-  console.log ("Mot de passe correct")
   return compare;
-}
+};
 
 const User = mongoose.model('User', userSchema);
 
