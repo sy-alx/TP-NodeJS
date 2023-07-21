@@ -1,12 +1,11 @@
 var express = require('express');
 var app = express();
 const bodyParser = require('body-parser');
-const jwt = require('jsonwebtoken');
 const User = require('./models/Users'); 
-
-// '/' est la route racine
+const loginRouter = require('./routes/login'); // Importez le routeur
 
 app.use(bodyParser.urlencoded({ extended: true }));
+
 app.get('/', function (req, res) {
   res.send(`
         <form action="/login" method="post">
@@ -19,23 +18,7 @@ app.get('/', function (req, res) {
     `);
 });
 
-app.post('/login', async (req, res) => {
-  const { email, password } = req.body;
-
-  const user = await User.findOne({ email });
-  if (!user) {
-    return res.status(400).send('Invalid email or password.');
-  }
-
-  const validPassword = await user.isValidPassword(password);
-  if (!validPassword) {
-    return res.status(400).send('Invalid email or password.');
-  }
-
-  const token = jwt.sign({ _id: user._id }, 'mounmounLeBest');
-  res.send(token);
-});
-
+app.use('/', loginRouter); // Utilisez le routeur
 
 app.listen(4000, function () {
   console.log("Application d'exemple écoutant sur le port 4000 !");

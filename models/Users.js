@@ -12,6 +12,7 @@ const userSchema = new mongoose.Schema({
 
 userSchema.methods.isValidPassword = async function(password) {
   const compare = await bcrypt.compare(password, this.password);
+  console.log ("Mot de passe correct")
   return compare;
 }
 

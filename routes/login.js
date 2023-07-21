@@ -1,10 +1,13 @@
+const express = require('express');
+const router = express.Router();
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const mongoose = require('mongoose');
-const User = mongoose.model('User'); // Assurez-vous d'avoir défini votre modèle d'utilisateur
+const User = mongoose.model('User');
 
-app.post('/login', async (req, res) => {
-  const { email, password } = req.body;
+router.post('/login', async (req, res) => {
+  const email = req.body.Email;
+  const password = req.body.password;
 
   const user = await User.findOne({ email });
   if (!user) {
@@ -19,3 +22,5 @@ app.post('/login', async (req, res) => {
   const token = jwt.sign({ _id: user._id }, 'mounmounLeBest');
   res.send(token);
 });
+
+module.exports = router;
